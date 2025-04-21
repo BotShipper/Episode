@@ -1,5 +1,6 @@
 package org.minhquan.app;
 
+import lombok.Setter;
 import org.minhquan.input.KeyboardInput;
 import org.minhquan.input.MouseInput;
 
@@ -10,6 +11,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.minhquan.util.Constant.Direction.*;
+import static org.minhquan.util.Constant.PlayerConstant.*;
+
+@Setter
 public class GamePanel extends JPanel {
 
     private MouseInput mouseInput;
@@ -17,7 +22,9 @@ public class GamePanel extends JPanel {
     private BufferedImage img;
     private BufferedImage[][] animations;
     private int aniTick, aniIndex, aniSpeed = 15;
-
+    private int playerAction = IDLE;
+    private int playerDir = -1;
+    private boolean isMoving = false;
 
     public GamePanel() {
 
@@ -58,17 +65,9 @@ public class GamePanel extends JPanel {
         setMaximumSize(size);
     }
 
-    public void changeXDelta(int value) {
-        this.xDelta += value;
-    }
-
-    public void changeYDelta(int value) {
-        this.yDelta += value;
-    }
-
-    public void setRectPos(int x, int y) {
-        this.xDelta = x;
-        this.yDelta = y;
+    public void setDirection(int direction) {
+        this.playerDir = direction;
+        isMoving = true;
     }
 
     private void updateAnimationTick() {
@@ -76,8 +75,27 @@ public class GamePanel extends JPanel {
         if (aniTick >= aniSpeed) {
             aniTick = 0;
             aniIndex++;
-            if (aniIndex >= 6) {
+            if (aniIndex >= GetSpriteAmount(playerAction)) {
                 aniIndex = 0;
+            }
+        }
+    }
+
+    private void setAnimationTick() {
+        if (isMoving) {
+            playerAction = RUNNING;
+        } else {
+            playerAction = IDLE;
+        }
+    }
+
+    private void updatePos() {
+        if (isMoving) {
+            switch (playerDir) {
+                case LEFT -> xDelta -= 5;
+                case UP -> yDelta -= 5;
+                case RIGHT -> xDelta += 5;
+                case DOWN -> yDelta += 5;
             }
         }
     }
@@ -86,7 +104,9 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
 
         updateAnimationTick();
+        setAnimationTick();
+        updatePos();
 
-        g.drawImage(animations[1][aniIndex], (int) xDelta, (int) yDelta, 128, 80, null);
+        g.drawImage(animations[playerAction][aniIndex], (int) xDelta, (int) yDelta, 256, 160, null);
     }
 }
