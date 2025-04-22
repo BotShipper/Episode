@@ -11,9 +11,9 @@ public class GameWindow {
 
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.add(gamePanel);
-        jFrame.setLocationRelativeTo(null);
-        jFrame.setResizable(false);
-        jFrame.pack();
+        jFrame.pack(); // lấy tỉ lệ cửa sổ theo panel
+        jFrame.setLocationRelativeTo(null); // đặt giữa màn hình
+        jFrame.setResizable(false); // không cho chỉnh kích thước
         jFrame.setVisible(true);
     }
 }

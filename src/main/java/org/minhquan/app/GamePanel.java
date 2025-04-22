@@ -14,7 +14,6 @@ import java.io.InputStream;
 import static org.minhquan.util.Constant.Direction.*;
 import static org.minhquan.util.Constant.PlayerConstant.*;
 
-@Setter
 public class GamePanel extends JPanel {
 
     private MouseInput mouseInput;
@@ -24,18 +23,19 @@ public class GamePanel extends JPanel {
     private int aniTick, aniIndex, aniSpeed = 15;
     private int playerAction = IDLE;
     private int playerDir = -1;
+
+    @Setter
     private boolean isMoving = false;
 
     public GamePanel() {
-
         mouseInput = new MouseInput(this);
 
-        importImg();
-        loadAnimtion();
-        setPanelSize();
-        addKeyListener(new KeyboardInput(this));
-        addMouseListener(mouseInput);
-        addMouseMotionListener(mouseInput);
+        importImg();    // tải hình ảnh sprite
+        loadAnimtion(); // cắt ảnh sprite thành từng frame nhỏ
+        setPanelSize(); // thiết lập kích thước panel
+        addKeyListener(new KeyboardInput(this)); // xử lý phím
+        addMouseListener(mouseInput);                      // xử lý click chuột
+        addMouseMotionListener(mouseInput);                // xử lý di chuyển chuột
     }
 
     private void loadAnimtion() {
@@ -49,7 +49,13 @@ public class GamePanel extends JPanel {
     }
 
     private void importImg() {
-        InputStream is = getClass().getResourceAsStream("/player_sprites.png");
+        String path = "/player_sprites.png";
+        InputStream is = getClass().getResourceAsStream(path);
+
+        if (is == null) {
+            System.err.println("Không tìm thấy file: " + path);
+            return;
+        }
 
         try {
             img = ImageIO.read(is);
@@ -98,6 +104,12 @@ public class GamePanel extends JPanel {
                 case DOWN -> yDelta += 5;
             }
         }
+    }
+
+    public void updateGame() {
+        updateAnimationTick();
+        setAnimationTick();
+        updatePos();
     }
 
     public void paintComponent(Graphics g) {
