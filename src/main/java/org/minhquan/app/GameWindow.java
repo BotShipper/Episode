@@ -1,6 +1,7 @@
 package org.minhquan.app;
 
 import javax.swing.*;
+import java.awt.event.WindowFocusListener;
 
 public class GameWindow {
 
@@ -15,5 +16,17 @@ public class GameWindow {
         jFrame.setLocationRelativeTo(null); // đặt giữa màn hình
         jFrame.setResizable(false); // không cho chỉnh kích thước
         jFrame.setVisible(true);
+        jFrame.addWindowFocusListener(new WindowFocusListener() {
+
+            @Override
+            public void windowLostFocus(java.awt.event.WindowEvent e) {
+                gamePanel.getGame().windowFocusLost();
+            }
+
+            @Override
+            public void windowGainedFocus(java.awt.event.WindowEvent e) {
+                gamePanel.requestFocus();
+            }
+        });
     }
 }
