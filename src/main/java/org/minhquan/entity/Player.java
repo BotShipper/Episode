@@ -1,12 +1,10 @@
 package org.minhquan.entity;
 
 import lombok.Setter;
+import org.minhquan.util.LoadSave;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 
 import static org.minhquan.util.Constant.PlayerConstant.*;
 
@@ -95,29 +93,20 @@ public class Player extends Entity {
     }
 
     private void loadAnimation() {
-        String path = "/player_sprites.png";
-        InputStream is = getClass().getResourceAsStream(path);
 
-        try (is) {
-            try {
-                if (is == null) {
-                    System.err.println("Không tìm thấy file: " + path);
-                    return;
-                }
-                BufferedImage img = ImageIO.read(is);
-
-                animations = new BufferedImage[9][6];
-                for (int j = 0; j < animations.length; j++) {
-                    for (int i = 0; i < animations[j].length; i++) {
-                        animations[j][i] = img.getSubimage(i * 64, j * 40, 64, 40);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
+        if (img == null) {
+            System.err.println("img == null -> loadAnimation");
+            return;
         }
+
+        animations = new BufferedImage[9][6];
+        for (int j = 0; j < animations.length; j++) {
+            for (int i = 0; i < animations[j].length; i++) {
+                animations[j][i] = img.getSubimage(i * 64, j * 40, 64, 40);
+            }
+        }
+
     }
 
     public void resetDirBooleans() {
