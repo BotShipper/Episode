@@ -1,7 +1,10 @@
 package org.minhquan.level;
 
+import lombok.Getter;
+
 public class Level {
 
+    @Getter
     private int[][] lvData;
 
     public Level(int[][] lvData) {

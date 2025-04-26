@@ -1,12 +1,14 @@
 package org.minhquan.entity;
 
 import lombok.Setter;
+import org.minhquan.app.Game;
 import org.minhquan.util.LoadSave;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static org.minhquan.util.Constant.PlayerConstant.*;
+import static org.minhquan.util.HelpMethod.CanMoveHere;
 
 public class Player extends Entity {
 
@@ -18,21 +20,25 @@ public class Player extends Entity {
     @Setter
     private boolean isLeft, isUp, isRight, isDown;
     private float playerSpeed = 2.0f;
+    @Setter
+    private int[][] lvData;
+    private float xDrawOffset = 21 * Game.SCALE, yDrawOffset = 4 * Game.SCALE;
 
-
-    public Player(float x, float y) {
-        super(x, y);
+    public Player(float x, float y, int width, int height) {
+        super(x, y, width, height);
         loadAnimation();
+        initHitbox(x, y, 20 * Game.SCALE, 28 * Game.SCALE);
     }
 
     public void update() {
-        updatePos();
-        updateAnimationTick();
-        setAnimationTick();
+        updatePos();              // Cập nhật vị trí
+        updateAnimationTick();    // Cập nhật frame animation
+        setAnimationTick();       // Xác định trạng thái animation hiện tại
     }
 
     public void render(Graphics g) {
-        g.drawImage(animations[playerAction][aniIndex], (int) x, (int) y, 256, 160, null);
+        g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset), width, height, null);
+        drawHitbox(g); // Vẽ hitbox để debug (nếu cần)
     }
 
     private void updateAnimationTick() {
@@ -74,20 +80,31 @@ public class Player extends Entity {
     private void updatePos() {
 
         isMoving = false;
+        if (!isLeft && !isRight && !isUp && !isDown)
+            return;
 
-        if (isLeft && !isRight) {
-            x -= playerSpeed;
-            isMoving = true;
-        } else if (isRight && !isLeft) {
-            x += playerSpeed;
-            isMoving = true;
-        }
+        float xSpeed = 0, ySpeed = 0;
 
-        if (isUp && !isDown) {
-            y -= playerSpeed;
-            isMoving = true;
-        } else if (isDown && !isUp) {
-            y += playerSpeed;
+        if (isLeft && !isRight)
+            xSpeed = -playerSpeed;
+        else if (isRight && !isLeft)
+            xSpeed = playerSpeed;
+
+
+        if (isUp && !isDown)
+            ySpeed = -playerSpeed;
+        else if (isDown && !isUp)
+            ySpeed = playerSpeed;
+
+//        if (CanMoveHere(x + xSpeed, y + ySpeed, width, height, lvData)) {
+//            this.x += xSpeed;
+//            this.y += ySpeed;
+//            isMoving = true;
+//        }
+
+        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y + ySpeed, hitbox.width, hitbox.height, lvData)) {
+            hitbox.x += xSpeed;
+            hitbox.y += ySpeed;
             isMoving = true;
         }
     }
