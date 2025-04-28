@@ -8,6 +8,16 @@ import java.awt.*;
 
 public class Game implements Runnable {
 
+    /**
+     * <h5>Các hằng số cấu hình cho trò chơi.</h5>
+     * - <b>TILES_DEFAULT_SIZE</b>: Kích thước mặc định của mỗi ô (tile) trong trò chơi, được đặt là 32 pixel.<br>
+     * - <b>SCALE</b>: Hệ số tỉ lệ dùng để thay đổi kích thước của các ô trong trò chơi, giá trị là 1.5f (phóng to 1.5 lần).<br>
+     * - <b>TILES_IN_WIDTH</b>: Số lượng ô theo chiều rộng của màn hình game. Được đặt là 26 ô.<br>
+     * - <b>TILES_IN_HEIGHT</b>: Số lượng ô theo chiều cao của màn hình game. Được đặt là 14 ô.<br>
+     * - <b>TILES_SIZE</b>: Kích thước thực tế của mỗi ô trong trò chơi, tính theo tỉ lệ SCALE.<br>
+     * - <b>GAME_WIDTH</b>: Chiều rộng tổng thể của cửa sổ game, tính theo pixel, bằng số lượng ô theo chiều rộng nhân với kích thước của mỗi ô.<br>
+     * - <b>GAME_HEIGHT</b>: Chiều cao tổng thể của cửa sổ game, tính theo pixel, bằng số lượng ô theo chiều cao nhân với kích thước của mỗi ô.<br>
+     */
     public final static int TILES_DEFAULT_SIZE = 32;
     public final static float SCALE = 1.5f;
     public final static int TILES_IN_WIDTH = 26;
@@ -39,7 +49,7 @@ public class Game implements Runnable {
     private void initClasses() {
         levelManager = new LevelManager(this);
         player = new Player(200, 200, (int) (64 * SCALE), (int) (40 * SCALE));
-        player.setLvData(levelManager.getCurrentLevel().getLvData());
+        player.loadLvData(levelManager.getCurrentLevel().getLvData());
     }
 
     private void startGameLoop() {
