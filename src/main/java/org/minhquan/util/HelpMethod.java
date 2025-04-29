@@ -27,7 +27,7 @@ public class HelpMethod {
         float yIndex = y / Game.TILES_SIZE;
         int value = lvData[(int) yIndex][(int) xIndex];
 
-        return value >= 48 || value < 0 || value != 11;
+        return value != 11;
     }
 
     // Đứng mép tránh đi xuyên tường

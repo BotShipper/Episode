@@ -1,8 +1,9 @@
 package org.minhquan.app;
 
 import lombok.Getter;
-import org.minhquan.entity.Player;
-import org.minhquan.level.LevelManager;
+import org.minhquan.gamestate.GameState;
+import org.minhquan.gamestate.Menu;
+import org.minhquan.gamestate.Playing;
 
 import java.awt.*;
 
@@ -32,10 +33,10 @@ public class Game implements Runnable {
     private GameWindow gameWindow;
     private GamePanel gamePanel;
     private Thread gameThread;
-    private LevelManager levelManager;
-
     @Getter
-    private Player player;
+    private Playing playing;
+    @Getter
+    private Menu menu;
 
     public Game() {
         initClasses();
@@ -47,9 +48,8 @@ public class Game implements Runnable {
     }
 
     private void initClasses() {
-        levelManager = new LevelManager(this);
-        player = new Player(200, 200, (int) (64 * SCALE), (int) (40 * SCALE));
-        player.loadLvData(levelManager.getCurrentLevel().getLvData());
+        menu = new Menu(this);
+        playing = new Playing(this);
     }
 
     private void startGameLoop() {
@@ -58,13 +58,19 @@ public class Game implements Runnable {
     }
 
     public void update() {
-        levelManager.update();
-        player.update();
+        switch (GameState.state) {
+            case MENU -> menu.update();
+            case PLAYING -> playing.update();
+            default -> System.err.println("No state found -> update");
+        }
     }
 
     public void render(Graphics g) {
-        levelManager.draw(g);
-        player.render(g);
+        switch (GameState.state) {
+            case MENU -> menu.draw(g);
+            case PLAYING -> playing.draw(g);
+            default -> System.err.println("No state found -> render");
+        }
     }
 
     @Override
@@ -96,7 +102,7 @@ public class Game implements Runnable {
             }
 
             if (deltaF >= 1) {
-                gamePanel.repaint();
+                gamePanel.repaint(); // Chạy lại paintComponent()
                 frames++;
                 deltaF--;
             }
@@ -111,6 +117,8 @@ public class Game implements Runnable {
     }
 
     public void windowFocusLost() {
-        player.resetDirBooleans();
+        if (GameState.state == GameState.PLAYING) {
+            playing.getPlayer().resetDirBoolean();
+        }
     }
 }

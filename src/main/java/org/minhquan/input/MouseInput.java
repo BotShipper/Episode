@@ -2,6 +2,7 @@ package org.minhquan.input;
 
 
 import org.minhquan.app.GamePanel;
+import org.minhquan.gamestate.GameState;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -17,8 +18,11 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            gamePanel.getGame().getPlayer().setAttacking(true);
+        switch (GameState.state) {
+            case MENU -> gamePanel.getGame().getMenu().mouseClicked(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().mouseClicked(e);
+            default -> System.err.println("No state found -> mouseClicked");
+
         }
     }
 

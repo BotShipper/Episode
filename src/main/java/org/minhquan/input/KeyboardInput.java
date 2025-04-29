@@ -2,6 +2,7 @@ package org.minhquan.input;
 
 
 import org.minhquan.app.GamePanel;
+import org.minhquan.gamestate.GameState;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -21,24 +22,19 @@ public class KeyboardInput implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W -> gamePanel.getGame().getPlayer().setUp(false);
-            case KeyEvent.VK_A -> gamePanel.getGame().getPlayer().setLeft(false);
-            case KeyEvent.VK_S -> gamePanel.getGame().getPlayer().setDown(false);
-            case KeyEvent.VK_D -> gamePanel.getGame().getPlayer().setRight(false);
-            case KeyEvent.VK_SPACE -> gamePanel.getGame().getPlayer().setJump(false);
+        switch (GameState.state) {
+            case MENU -> gamePanel.getGame().getMenu().keyReleased(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().keyReleased(e);
+            default -> System.err.println("No state found -> keyReleased");
         }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W -> gamePanel.getGame().getPlayer().setUp(true);
-            case KeyEvent.VK_A -> gamePanel.getGame().getPlayer().setLeft(true);
-            case KeyEvent.VK_S -> gamePanel.getGame().getPlayer().setDown(true);
-            case KeyEvent.VK_D -> gamePanel.getGame().getPlayer().setRight(true);
-            case KeyEvent.VK_SPACE -> gamePanel.getGame().getPlayer().setJump(true);
-
+        switch (GameState.state) {
+            case MENU -> gamePanel.getGame().getMenu().keyPressed(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().keyPressed(e);
+            default -> System.err.println("No state found -> keyPressed");
         }
     }
 }

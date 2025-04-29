@@ -177,7 +177,7 @@ public class Player extends Entity {
         }
     }
 
-    public void resetDirBooleans() {
+    public void resetDirBoolean() {
         isLeft = false;
         isRight = false;
         isUp = false;
