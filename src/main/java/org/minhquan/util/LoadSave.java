@@ -1,5 +1,6 @@
 package org.minhquan.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.minhquan.app.Game;
 
 import javax.imageio.ImageIO;
@@ -8,11 +9,14 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Slf4j
 public class LoadSave {
 
     public static final String PLAYER_ATLAS = "player_sprites.png"; // Hành động đi, đứng nhảy
     public static final String LEVEL_ATLAS = "outside_sprites.png"; // Nền đất, tường, không khí
     public static final String LEVEL_ONE_DATA = "level_one_data.png"; // Dùng màu để kiểm tra tường
+    public static final String MENU_BUTTONS = "button_atlas.png";
+    public static final String MENU_BACKGROUND = "menu_background.png";
 
     public static BufferedImage GetSpriteAtlas(String fileName) {
         BufferedImage img = null;
@@ -22,7 +26,7 @@ public class LoadSave {
         try (is) {
             try {
                 if (is == null) {
-                    System.err.println("Không tìm thấy file: " + path);
+                    log.error("Không tìm thấy file: {}", path);
                     return null;
                 }
                 img = ImageIO.read(is);
@@ -42,7 +46,7 @@ public class LoadSave {
         int[][] lvData = new int[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
         BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
         if (img == null) {
-            System.err.println("img == null -> GetLevelData");
+            log.error("img == null -> GetLevelData");
             return null;
         }
         for (int j = 0; j < img.getHeight(); j++) {

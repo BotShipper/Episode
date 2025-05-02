@@ -1,12 +1,14 @@
 package org.minhquan.app;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.minhquan.gamestate.GameState;
 import org.minhquan.gamestate.Menu;
 import org.minhquan.gamestate.Playing;
 
 import java.awt.*;
 
+@Slf4j
 public class Game implements Runnable {
 
     /**
@@ -61,7 +63,10 @@ public class Game implements Runnable {
         switch (GameState.state) {
             case MENU -> menu.update();
             case PLAYING -> playing.update();
-            default -> System.err.println("No state found -> update");
+            default -> {
+                log.error("No state found -> update");
+                System.exit(0);
+            }
         }
     }
 
@@ -69,7 +74,7 @@ public class Game implements Runnable {
         switch (GameState.state) {
             case MENU -> menu.draw(g);
             case PLAYING -> playing.draw(g);
-            default -> System.err.println("No state found -> render");
+            default -> log.error("No state found -> render");
         }
     }
 

@@ -1,11 +1,13 @@
 package org.minhquan.level;
 
+import lombok.extern.slf4j.Slf4j;
 import org.minhquan.app.Game;
 import org.minhquan.util.LoadSave;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+@Slf4j
 public class LevelManager {
 
     private Game game;
@@ -23,7 +25,7 @@ public class LevelManager {
 
         BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
         if (img == null) {
-            System.err.println("img == null -> importOutsideSprites");
+            log.error("img == null -> importOutsideSprites");
             return;
         }
 

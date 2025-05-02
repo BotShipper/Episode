@@ -1,6 +1,7 @@
 package org.minhquan.input;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.minhquan.app.GamePanel;
 import org.minhquan.gamestate.GameState;
 
@@ -8,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+@Slf4j
 public class MouseInput implements MouseListener, MouseMotionListener {
 
     private GamePanel gamePanel;
@@ -19,21 +21,27 @@ public class MouseInput implements MouseListener, MouseMotionListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         switch (GameState.state) {
-            case MENU -> gamePanel.getGame().getMenu().mouseClicked(e);
             case PLAYING -> gamePanel.getGame().getPlaying().mouseClicked(e);
-            default -> System.err.println("No state found -> mouseClicked");
-
+            default -> log.error("No state found -> mouseClicked");
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        switch (GameState.state) {
+            case MENU -> gamePanel.getGame().getMenu().mousePressed(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().mousePressed(e);
+            default -> log.error("No state found -> mousePressed");
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        switch (GameState.state) {
+            case MENU -> gamePanel.getGame().getMenu().mouseReleased(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().mouseReleased(e);
+            default -> log.error("No state found -> mouseReleased");
+        }
     }
 
     @Override
@@ -53,6 +61,10 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        switch (GameState.state) {
+            case MENU -> gamePanel.getGame().getMenu().mouseMoved(e);
+            case PLAYING -> gamePanel.getGame().getPlaying().mouseMoved(e);
+            default -> log.error("No state found -> mouseMoved");
+        }
     }
 }

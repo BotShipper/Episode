@@ -1,6 +1,7 @@
 package org.minhquan.entity;
 
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.minhquan.app.Game;
 import org.minhquan.util.LoadSave;
 
@@ -10,6 +11,7 @@ import java.awt.image.BufferedImage;
 import static org.minhquan.util.Constant.PlayerConstant.*;
 import static org.minhquan.util.HelpMethod.*;
 
+@Slf4j
 public class Player extends Entity {
 
     private BufferedImage[][] animations;
@@ -19,7 +21,7 @@ public class Player extends Entity {
     private boolean isMoving = false, isAttacking = false;
     @Setter
     private boolean isLeft, isUp, isRight, isDown, isJump;
-    private float playerSpeed = 2.0f;
+    private float playerSpeed = Game.SCALE;
     private int[][] lvData;
     private float xDrawOffset = 21 * Game.SCALE, yDrawOffset = 4 * Game.SCALE;
 
@@ -33,7 +35,7 @@ public class Player extends Entity {
     public Player(float x, float y, int width, int height) {
         super(x, y, width, height);
         loadAnimation();
-        initHitbox(x, y, 20 * Game.SCALE, 27 * Game.SCALE);
+        initHitbox(x, y, (int) (20 * Game.SCALE), (int) (27 * Game.SCALE));
 
     }
 
@@ -158,7 +160,7 @@ public class Player extends Entity {
 
         BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
         if (img == null) {
-            System.err.println("img == null -> loadAnimation");
+            log.error("img == null -> loadAnimation");
             return;
         }
 
