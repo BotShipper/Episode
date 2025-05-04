@@ -2,6 +2,7 @@ package org.minhquan.ui;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.minhquan.gamestate.GameState;
 import org.minhquan.util.LoadSave;
 
@@ -10,6 +11,7 @@ import java.awt.image.BufferedImage;
 
 import static org.minhquan.util.Constant.UI.Buttons.*;
 
+@Slf4j
 public class MenuButton {
     private int xPos, yPos, rowIndex, index;
     private int xOffsetCenter = B_WIDTH / 2;
@@ -38,6 +40,10 @@ public class MenuButton {
     private void loadImgs() {
         imgs = new BufferedImage[3];
         BufferedImage temp = LoadSave.GetSpriteAtlas(LoadSave.MENU_BUTTONS);
+        if (temp == null) {
+            log.error("temp == null -> loadImgs");
+            return;
+        }
         for (int i = 0; i < imgs.length; i++) {
             imgs[i] = temp.getSubimage(i * B_WIDTH_DEFAULT, rowIndex * B_HEIGHT_DEFAULT, B_WIDTH_DEFAULT, B_HEIGHT_DEFAULT);
         }
@@ -61,7 +67,7 @@ public class MenuButton {
         GameState.state = state;
     }
 
-    public void resetBools() {
+    public void resetBooleans() {
         mouseOver = false;
         mousePressed = false;
     }

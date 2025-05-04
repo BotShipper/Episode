@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.minhquan.app.Game;
 import org.minhquan.entity.Player;
 import org.minhquan.level.LevelManager;
+import org.minhquan.ui.PauseOverlay;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -11,8 +12,10 @@ import java.awt.event.MouseEvent;
 
 public class Playing extends State implements StateMethod {
     private LevelManager levelManager;
+    private PauseOverlay pauseOverlay;
     @Getter
     private Player player;
+    private boolean paused = true;
 
     public Playing(Game game) {
         super(game);
@@ -23,12 +26,14 @@ public class Playing extends State implements StateMethod {
     public void update() {
         levelManager.update();
         player.update();
+        pauseOverlay.update();
     }
 
     @Override
     public void draw(Graphics g) {
         levelManager.draw(g);
         player.render(g);
+        pauseOverlay.draw(g);
     }
 
     @Override
@@ -40,17 +45,23 @@ public class Playing extends State implements StateMethod {
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        if (paused) {
+            pauseOverlay.mousePressed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        if (paused) {
+            pauseOverlay.mouseReleased(e);
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        if (paused) {
+            pauseOverlay.mouseMoved(e);
+        }
     }
 
     @Override
@@ -76,6 +87,7 @@ public class Playing extends State implements StateMethod {
         levelManager = new LevelManager(game);
         player = new Player(200, 200, (int) (64 * Game.SCALE), (int) (40 * Game.SCALE));
         player.loadLvData(levelManager.getCurrentLevel().getLvData());
+        pauseOverlay = new PauseOverlay();
     }
 
     public void windowFocusLost() {
