@@ -15,7 +15,7 @@ public class Playing extends State implements StateMethod {
     private PauseOverlay pauseOverlay;
     @Getter
     private Player player;
-    private boolean paused = true;
+    private boolean paused;
 
     public Playing(Game game) {
         super(game);
@@ -24,16 +24,22 @@ public class Playing extends State implements StateMethod {
 
     @Override
     public void update() {
-        levelManager.update();
-        player.update();
-        pauseOverlay.update();
+        if (!paused) {
+            levelManager.update();
+            player.update();
+        } else {
+            pauseOverlay.update();
+        }
     }
 
     @Override
     public void draw(Graphics g) {
         levelManager.draw(g);
         player.render(g);
-        pauseOverlay.draw(g);
+
+        if (paused) {
+            pauseOverlay.draw(g);
+        }
     }
 
     @Override
@@ -64,13 +70,19 @@ public class Playing extends State implements StateMethod {
         }
     }
 
+    public void mouseDragged(MouseEvent e) {
+        if (paused) {
+            pauseOverlay.mouseDragged(e);
+        }
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_A -> player.setLeft(true);
             case KeyEvent.VK_D -> player.setRight(true);
             case KeyEvent.VK_SPACE -> player.setJump(true);
-            case KeyEvent.VK_BACK_SPACE -> GameState.state = GameState.MENU;
+            case KeyEvent.VK_BACK_SPACE -> paused = !paused;
         }
     }
 
@@ -83,11 +95,15 @@ public class Playing extends State implements StateMethod {
         }
     }
 
+    public void unpauseGame() {
+        paused = false;
+    }
+
     private void initClasses() {
         levelManager = new LevelManager(game);
         player = new Player(200, 200, (int) (64 * Game.SCALE), (int) (40 * Game.SCALE));
         player.loadLvData(levelManager.getCurrentLevel().getLvData());
-        pauseOverlay = new PauseOverlay();
+        pauseOverlay = new PauseOverlay(this);
     }
 
     public void windowFocusLost() {

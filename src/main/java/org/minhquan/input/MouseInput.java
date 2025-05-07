@@ -22,6 +22,8 @@ public class MouseInput implements MouseListener, MouseMotionListener {
     public void mouseClicked(MouseEvent e) {
         switch (GameState.state) {
             case PLAYING -> gamePanel.getGame().getPlaying().mouseClicked(e);
+            case MENU -> {
+            }
             default -> log.error("No state found -> mouseClicked");
         }
     }
@@ -56,7 +58,12 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        switch (GameState.state) {
+            case PLAYING -> gamePanel.getGame().getPlaying().mouseDragged(e);
+            case MENU -> {
+            }
+            default -> log.error("No state found -> mouseDragged");
+        }
     }
 
     @Override
