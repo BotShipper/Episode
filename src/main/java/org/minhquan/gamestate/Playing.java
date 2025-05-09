@@ -10,7 +10,11 @@ import org.minhquan.util.LoadSave;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.Objects;
+import java.util.Random;
+
+import static org.minhquan.util.Constant.Environment.*;
 
 public class Playing extends State implements StateMethod {
     private LevelManager levelManager;
@@ -26,9 +30,20 @@ public class Playing extends State implements StateMethod {
     private int maxTilesOffet = lvlTilesWide - Game.TILES_IN_WIDTH; // Số ô camera có thể di chuyển - số ô không nằm trong bản đồ
     private int maxLvOffsetX = maxTilesOffet * Game.TILES_SIZE; // Tính theo pixel
 
+    private BufferedImage backgroundImg, bigCloud, smallCloud;
+    private int[] smallCloudsPos;
+    private Random rnd = new Random();
+
     public Playing(Game game) {
         super(game);
         initClasses();
+        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.PLAYING_BG_IMG);
+        bigCloud = LoadSave.GetSpriteAtlas(LoadSave.BIG_CLOUDS);
+        smallCloud = LoadSave.GetSpriteAtlas(LoadSave.SMALL_CLOUDS);
+        smallCloudsPos = new int[8];
+        for (int i = 0; i < smallCloudsPos.length; i++) {
+            smallCloudsPos[i] = (int) (90 * Game.SCALE + rnd.nextInt((int) (100 * Game.SCALE)));
+        }
     }
 
     @Override
@@ -61,6 +76,10 @@ public class Playing extends State implements StateMethod {
 
     @Override
     public void draw(Graphics g) {
+        g.drawImage(backgroundImg, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+
+        drawClouds(g);
+
         levelManager.draw(g, xLvOffset);
         player.render(g, xLvOffset);
 
@@ -68,6 +87,15 @@ public class Playing extends State implements StateMethod {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
             pauseOverlay.draw(g);
+        }
+    }
+
+    private void drawClouds(Graphics g) {
+        for (int i = 0; i < 3; i++) {
+            g.drawImage(bigCloud, (int) (i * BIG_CLOUD_WIDTH - xLvOffset * 0.3), (int) (204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
+        }
+        for (int i = 0; i < smallCloudsPos.length; i++) {
+            g.drawImage(smallCloud, (int) (SMALL_CLOUD_WIDTH * 2 * i - xLvOffset * 0.3), smallCloudsPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
         }
     }
 
