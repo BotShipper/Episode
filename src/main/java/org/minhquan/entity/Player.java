@@ -45,8 +45,8 @@ public class Player extends Entity {
         setAnimation();       // Xác định trạng thái animation hiện tại
     }
 
-    public void render(Graphics g) {
-        g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset), width, height, null);
+    public void render(Graphics g, int lvlOffset) {
+        g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset) - lvlOffset, (int) (hitbox.y - yDrawOffset), width, height, null);
         // drawHitbox(g); // Vẽ hitbox để debug (nếu cần)
     }
 
@@ -100,8 +100,13 @@ public class Player extends Entity {
         if (isJump) {
             jump();
         }
-        if (!isLeft && !isRight && !inAir)
-            return;
+//        if (!isLeft && !isRight && !inAir)
+//            return;
+
+        if (!inAir) {
+            if ((!isLeft && !isRight) || (isLeft && isRight))
+                return;
+        }
 
         float xSpeed = 0;
 

@@ -1,7 +1,6 @@
 package org.minhquan.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.minhquan.app.Game;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,13 +13,15 @@ public class LoadSave {
 
     public static final String PLAYER_ATLAS = "player_sprites.png"; // Hành động đi, đứng nhảy
     public static final String LEVEL_ATLAS = "outside_sprites.png"; // Nền đất, tường, không khí
-    public static final String LEVEL_ONE_DATA = "level_one_data.png"; // Dùng màu để kiểm tra tường
+    // public static final String LEVEL_ONE_DATA = "level_one_data.png"; // Dùng màu để kiểm tra tường
+    public static final String LEVEL_ONE_DATA = "level_one_data_long.png"; // Dùng màu để kiểm tra tường
     public static final String MENU_BUTTONS = "button_atlas.png";
     public static final String MENU_BACKGROUND = "menu_background.png";
     public static final String PAUSE_BACKGROUND = "pause_menu.png";
     public static final String SOUND_BUTTONS = "sound_button.png";
     public static final String URM_BUTTONS = "urm_buttons.png";
     public static final String VOLUME_BUTTONS = "volume_buttons.png";
+    public static final String MENU_BACKGROUND_IMG = "background_menu.png";
 
     public static BufferedImage GetSpriteAtlas(String fileName) {
         BufferedImage img = null;
@@ -47,12 +48,13 @@ public class LoadSave {
 
     // Lấy dải màu để ghép map (đất, nước, không khí)
     public static int[][] GetLevelData() {
-        int[][] lvData = new int[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
         BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
         if (img == null) {
             log.error("img == null -> GetLevelData");
             return null;
         }
+        int[][] lvData = new int[img.getHeight()][img.getWidth()];
+
         for (int j = 0; j < img.getHeight(); j++) {
             for (int i = 0; i < img.getWidth(); i++) {
                 Color color = new Color(img.getRGB(i, j));
