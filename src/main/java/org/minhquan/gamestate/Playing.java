@@ -2,6 +2,7 @@ package org.minhquan.gamestate;
 
 import lombok.Getter;
 import org.minhquan.app.Game;
+import org.minhquan.entity.EnemyManager;
 import org.minhquan.entity.Player;
 import org.minhquan.level.LevelManager;
 import org.minhquan.ui.PauseOverlay;
@@ -18,6 +19,7 @@ import static org.minhquan.util.Constant.Environment.*;
 
 public class Playing extends State implements StateMethod {
     private LevelManager levelManager;
+    private EnemyManager enemyManager;
     private PauseOverlay pauseOverlay;
     @Getter
     private Player player;
@@ -51,6 +53,7 @@ public class Playing extends State implements StateMethod {
         if (!paused) {
             levelManager.update();
             player.update();
+            enemyManager.update();
             checkCloseToBorder();
         } else {
             pauseOverlay.update();
@@ -82,6 +85,7 @@ public class Playing extends State implements StateMethod {
 
         levelManager.draw(g, xLvOffset);
         player.render(g, xLvOffset);
+        enemyManager.draw(g, xLvOffset);
 
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
@@ -158,6 +162,7 @@ public class Playing extends State implements StateMethod {
 
     private void initClasses() {
         levelManager = new LevelManager(game);
+        enemyManager = new EnemyManager(this);
         player = new Player(200, 200, (int) (64 * Game.SCALE), (int) (40 * Game.SCALE));
         player.loadLvData(levelManager.getCurrentLevel().getLvData());
         pauseOverlay = new PauseOverlay(this);
