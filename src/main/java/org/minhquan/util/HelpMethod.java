@@ -67,4 +67,17 @@ public class HelpMethod {
         }
         return true;
     }
+
+    /**
+     * Ở đây, chúng ta chỉ kiểm tra điểm ở dưới bên trái của kẻ địch, cộng hoặc trừ xSpeed.
+     * Chúng ta không kiểm tra điểm dưới bên phải trong trường hợp kẻ địch đang di chuyển sang phải.
+     * Cách kiểm tra đúng hơn là kiểm tra điểm dưới bên trái khi đi sang trái
+     * và điểm dưới bên phải khi đi sang phải.
+     * Tuy nhiên, điều này sẽ không ảnh hưởng nhiều đến trò chơi.
+     * Kẻ địch đơn giản sẽ đổi hướng sớm hơn khi gặp mép bên phải,
+     * nếu nó đang di chuyển sang phải
+     */
+    public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvData) {
+        return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvData);
+    }
 }
