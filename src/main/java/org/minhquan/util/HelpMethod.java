@@ -26,9 +26,14 @@ public class HelpMethod {
 
         float xIndex = x / Game.TILES_SIZE;
         float yIndex = y / Game.TILES_SIZE;
-        int value = lvData[(int) yIndex][(int) xIndex];
 
-        return value != 11;
+        return IsTileSolid((int) xIndex, (int) yIndex, lvData);
+    }
+
+    public static boolean IsTileSolid(int xTile, int yTile, int[][] lvData) {
+        int value = lvData[yTile][xTile];
+
+        return value != 11; // 11 là ô không khí
     }
 
     // Đứng mép tránh đi xuyên tường
@@ -79,5 +84,29 @@ public class HelpMethod {
      */
     public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvData) {
         return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvData);
+    }
+
+    public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
+        for (int i = 0; i < xEnd - xStart; i++) {
+            if (IsTileSolid(xStart + i, y, lvlData)) {
+                return false;
+            }
+            if (!IsTileSolid(xStart + i, y + 1, lvlData)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean IsSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox,
+                                       Rectangle2D.Float secondHitbox, int yTile) {
+        int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);
+        int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);
+
+        if (firstXTile > secondXTile) {
+            return IsAllTileWalkable(secondXTile, firstXTile, yTile, lvlData);
+        } else {
+            return IsAllTileWalkable(firstXTile, secondXTile, yTile, lvlData);
+        }
     }
 }
