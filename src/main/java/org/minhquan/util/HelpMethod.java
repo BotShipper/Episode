@@ -1,9 +1,17 @@
 package org.minhquan.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.minhquan.app.Game;
+import org.minhquan.entity.Crabby;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
+import static org.minhquan.util.Constant.EnemyConstants.CRABBY;
+
+@Slf4j
 public class HelpMethod {
 
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvData) {
@@ -83,7 +91,11 @@ public class HelpMethod {
      * nếu nó đang di chuyển sang phải
      */
     public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvData) {
-        return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvData);
+        if (xSpeed > 0) {
+            return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, lvData);
+        } else {
+            return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvData);
+        }
     }
 
     public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
@@ -108,5 +120,57 @@ public class HelpMethod {
         } else {
             return IsAllTileWalkable(firstXTile, secondXTile, yTile, lvlData);
         }
+    }
+
+    // Lấy dải màu để ghép map (đất, nước, không khí)
+    public static int[][] GetLevelData(BufferedImage img) {
+        if (img == null) {
+            log.error("img == null -> GetLevelData");
+            return null;
+        }
+
+        int[][] lvData = new int[img.getHeight()][img.getWidth()];
+        for (int j = 0; j < img.getHeight(); j++) {
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getRed();
+                if (value >= 48) {
+                    value = 0;
+                }
+                lvData[j][i] = value;
+            }
+        }
+        return lvData;
+    }
+
+    public static ArrayList<Crabby> GetCrabs(BufferedImage img) {
+        if (img == null) {
+            log.error("img == null -> GetCrabs");
+            return null;
+        }
+        ArrayList<Crabby> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == CRABBY) {
+                    list.add(new Crabby(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
+                }
+            }
+        }
+        return list;
+    }
+
+    public static Point GetPlayerSpawn(BufferedImage img) {
+        for (int j = 0; j < img.getHeight(); j++) {
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == 100) {
+                    return new Point(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
+                }
+            }
+        }
+        return new Point(Game.TILES_SIZE, Game.TILES_SIZE);
     }
 }

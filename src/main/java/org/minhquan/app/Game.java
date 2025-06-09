@@ -41,10 +41,12 @@ public class Game implements Runnable {
     private Menu menu;
 
     public Game() {
+
         initClasses();
 
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
+        gamePanel.setFocusable(true); // Cho phép panel nhận focus
         gamePanel.requestFocus(); // nhận sự kiện bàn phím
         startGameLoop();
     }

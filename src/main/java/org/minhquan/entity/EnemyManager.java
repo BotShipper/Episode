@@ -2,6 +2,7 @@ package org.minhquan.entity;
 
 import lombok.extern.slf4j.Slf4j;
 import org.minhquan.gamestate.Playing;
+import org.minhquan.level.Level;
 import org.minhquan.util.LoadSave;
 
 import java.awt.*;
@@ -21,11 +22,10 @@ public class EnemyManager {
     public EnemyManager(Playing playing) {
         this.playing = playing;
         loadEnemyImgs();
-        addEnemies();
     }
 
-    private void addEnemies() {
-        crabbies = LoadSave.GetCrabs();
+    public void loadEnemies(Level level) {
+        crabbies = level.getCrabs();
         if (crabbies == null) {
             log.error("crabbies == null -> addEnemies");
             return;
@@ -34,9 +34,15 @@ public class EnemyManager {
     }
 
     public void update(int[][] lvlData, Player player) {
+        boolean isAnyActive = false;
         for (Crabby c : crabbies) {
-            if (c.isActive())
+            if (c.isActive()) {
                 c.update(lvlData, player);
+                isAnyActive = true;
+            }
+        }
+        if (!isAnyActive) {
+            playing.setLvlCompleted(true);
         }
     }
 
